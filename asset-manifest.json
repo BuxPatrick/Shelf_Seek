@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/Shelf_Seek/static/css/main.3c90533b.css",
+    "main.js": "/Shelf_Seek/static/js/main.14473ee4.js",
+    "static/media/library-img.jpg": "/Shelf_Seek/static/media/library-img.4ff6c036ab29ee9a1157.jpg",
+    "static/media/cover_not_found.jpg": "/Shelf_Seek/static/media/cover_not_found.69846940c7af3e651508.jpg",
+    "static/media/about-img.jpg": "/Shelf_Seek/static/media/about-img.29ac1ed7b259c62a9a6a.jpg",
+    "index.html": "/Shelf_Seek/index.html",
+    "static/media/loader.svg": "/Shelf_Seek/static/media/loader.a3343f12420f3160e32c5317638f2198.svg",
+    "main.3c90533b.css.map": "/Shelf_Seek/static/css/main.3c90533b.css.map",
+    "main.14473ee4.js.map": "/Shelf_Seek/static/js/main.14473ee4.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3c90533b.css",
+    "static/js/main.14473ee4.js"
+  ]
+}
