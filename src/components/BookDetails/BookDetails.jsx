@@ -12,20 +12,24 @@ const BookDetails = () => {
   const {id} = useParams();
   const [loading, setLoading] = useState(false);
   const [book, setBook] = useState(null);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     setLoading(true);
+    setError(null);
     async function getBookDetails(){
       try{
         const response = await fetch(`${URL}${id}.json`);
+        if (!response.ok) {
+          throw new Error('Book not found');
+        }
         const data = await response.json();
-        console.log(data);
 
         if(data){
           const {description, title, covers, subject_places, subject_times, subjects} = data;
           const newBook = {
-            description: description ? description.value : "No description found",
+            description: description ? (typeof description === 'object' ? description.value : description) : "No description found",
             title: title,
             cover_img: covers ? `https://covers.openlibrary.org/b/id/${covers[0]}-L.jpg` : coverImg,
             subject_places: subject_places ? subject_places.join(", ") : "No subject places found",
@@ -35,10 +39,12 @@ const BookDetails = () => {
           setBook(newBook);
         } else {
           setBook(null);
+          setError('No book data found');
         }
-        setLoading(false);
       } catch(error){
-        console.log(error);
+        setError(error.message);
+        console.error(error);
+      } finally {
         setLoading(false);
       }
     }
@@ -46,6 +52,17 @@ const BookDetails = () => {
   }, [id]);
 
   if(loading) return <Loading />;
+  if(error) return (
+    <div className='container'>
+      <div className='error-msg text-center'>
+        <h3 className='fs-18 fw-6'>{error}</h3>
+        <button className='flex flex-c back-btn' onClick={() => navigate("/book")}>
+          <FaArrowLeft size={22} />
+          <span className='fs-18 fw-6'>Go Back</span>
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <section className='book-details'>

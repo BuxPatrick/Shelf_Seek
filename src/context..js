@@ -1,6 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import { useCallback } from 'react';
-const URL = "http://openlibrary.org/search.json?title=";
+const URL = "http://openlibrary.org/search.json?q=";
 const AppContext = React.createContext();
 
 const AppProvider = ({children}) => {
@@ -8,13 +8,18 @@ const AppProvider = ({children}) => {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [resultTitle, setResultTitle] = useState("");
+    const [error, setError] = useState(null);
 
     const fetchBooks = useCallback(async() => {
         setLoading(true);
+        setError(null);
         try{
             const response = await fetch(`${URL}${searchTerm}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch books');
+            }
             const data = await response.json();
-            const {docs} = data;
+            const {docs, numFound} = data;
 
             if(docs){
                 const newBooks = docs.slice(0, 20).map((bookSingle) => {
@@ -22,28 +27,24 @@ const AppProvider = ({children}) => {
 
                     return {
                         id: key,
-                        author: author_name,
+                        author: author_name || ["Unknown author"],
                         cover_id: cover_i,
-                        edition_count: edition_count,
-                        first_publish_year: first_publish_year,
+                        edition_count: edition_count || 0,
+                        first_publish_year: first_publish_year || "Unknown",
                         title: title
                     }
                 });
 
                 setBooks(newBooks);
-
-                if(newBooks.length > 1){
-                    setResultTitle("Your Search Result");
-                } else {
-                    setResultTitle("No Search Result Found!")
-                }
+                setResultTitle(`${numFound} Search Results`);
             } else {
                 setBooks([]);
                 setResultTitle("No Search Result Found!");
             }
-            setLoading(false);
         } catch(error){
-            console.log(error);
+            setError(error.message);
+            setResultTitle("Error fetching books");
+        } finally {
             setLoading(false);
         }
     }, [searchTerm]);
